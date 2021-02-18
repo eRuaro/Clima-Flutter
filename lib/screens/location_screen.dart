@@ -4,7 +4,6 @@ import 'package:clima/utilities/constants.dart';
 import 'package:clima/services/weather.dart';
 
 class LocationScreen extends StatefulWidget {
-
   LocationScreen({this.locationWeather});
 
   final locationWeather;
@@ -14,8 +13,6 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-
-
   WeatherModel weather = WeatherModel();
 
   int temperature;
@@ -48,8 +45,6 @@ class _LocationScreenState extends State<LocationScreen> {
       message = weather.getMessage(temperature);
       cityName = weatherData['name'];
     });
-
-
   }
 
   @override
@@ -84,10 +79,21 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return CityScreen();
-                      }),);
+                    //Fetches what user types
+                    onPressed: () async {
+                      var typeName = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return CityScreen();
+                          },
+                        ),
+                      );
+
+                      if (typeName != null) {
+                          var weatherData = await weather.getCityWeather(typeName);
+                          updateUI(weatherData);
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
@@ -126,6 +132,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-
-
