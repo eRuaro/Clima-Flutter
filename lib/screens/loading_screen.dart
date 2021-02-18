@@ -1,11 +1,8 @@
 import 'package:clima/screens/location_screen.dart';
-import 'package:clima/services/location.dart';
 import 'package:flutter/material.dart';
-import 'package:clima/services/networking.dart';
+import 'package:clima/services/weather.dart';
 import 'location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-const String api_key = 'c4acafb3da83dfe3992df9e0f7465a65';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -13,25 +10,17 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-
-
   void getLocationData() async {
-    Location location = Location();
-
-    //Await can only work on futures - that's why Future is used in location.dart
-    await location.getCurrentLocation();
-
-    NetworkHelper networkHelper = NetworkHelper(
-        'http://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=$api_key&units=metric');
-
-    var weatherData = await networkHelper.getData();
+    var weatherData = await WeatherModel().getLocationWeather();
 
     //Instantly pushes to LocationScreen on startup
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {
-          return LocationScreen(locationWeather: weatherData,);
+          return LocationScreen(
+            locationWeather: weatherData,
+          );
         },
       ),
     );
